@@ -1,6 +1,7 @@
 import { call, select, put, all, takeLatest } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
+import history from '../../../services/history';
 import api from '../../../services/api';
 import { formatPrice } from '../../../util/format';
 
@@ -35,13 +36,13 @@ function* addToCart({ id }) {
     };
 
     yield put(addToCartSuccess(data));
+
+    history.push('/cart');
   }
 }
 
 function* updateAmount({ id, amount }) {
   if (amount <= 0) return;
-
-  const product = yield select(state => state.cart.find(p => p.id === id));
 
   const stock = yield call(api.get, `/stock/${id}`);
   const stockAmount = stock.data.amount;
